@@ -117,3 +117,5 @@ pinctrl_k1 20480 2 [permanent], Live 0xffffffff0178f000
 / #
 
 ```
+- pinctrl不能rmmod,显示busy，是串口在使用or...
+- clk启动之后的第一次rmmod有警告，但是第二次就没有了
