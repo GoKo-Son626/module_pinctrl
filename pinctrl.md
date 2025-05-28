@@ -1,7 +1,7 @@
 <!--
  * @Date: 2025-05-27
  * @LastEditors: Goko Son
- * @LastEditTime: 2025-05-27
+ * @LastEditTime: 2025-05-28
  * @FilePath: /pinctrl/pinctrl.md
  * @Description: 
 -->
@@ -118,10 +118,26 @@ pinctrl_k1 20480 2 [permanent], Live 0xffffffff0178f000
 
 ```
 - pinctrl不能rmmod,显示busy，是串口在使用or...
-- clk启动之后的第一次rmmod有警告，但是第二次就没有了
+- clk启动之后的第一次rmmod有警告，但是insmod后第二次就没有警告了
 
-或许就是pinctrl被d4017000.serial使用了：
-```/ # cat sys/kernel/debug/pinctrl/d401e000.pinctrl/pinmux-pins
+或许就是d4017000.serial的原因：
+```
+/ # for f in /proc/device-tree/soc/serial@*/status; do
+>   echo -n "$(basename $(dirname "$f")): "
+>   cat "$f"
+>   echo
+> done
+serial@d4017000: okay
+serial@d4017100: disabled
+serial@d4017200: disabled
+serial@d4017300: disabled
+serial@d4017400: disabled
+serial@d4017500: disabled
+serial@d4017600: disabled
+serial@d4017700: disabled
+serial@d4017800: disabled
+serial@f0612000: reserved
+/ # cat sys/kernel/debug/pinctrl/d401e000.pinctrl/pinmux-pins
 Pinmux settings per pin
 Format: pin (name): mux_owner|gpio_owner (strict) hog?
 pin 0 (GPIO_00): UNCLAIMED
